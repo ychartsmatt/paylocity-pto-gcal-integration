@@ -33,7 +33,7 @@ exports.handler = async (event) => {
     } catch (e) {
         console.error(e);
         return {
-            statusCode: 400,
+            statusCode: 500,
             error: e
         }
     }
