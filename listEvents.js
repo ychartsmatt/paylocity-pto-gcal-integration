@@ -1,5 +1,7 @@
+require('dotenv').config();
+const { google } = require('googleapis');
 const calendar = google.calendar({ version: 'v3' });
-const calendarId = process.argv[2] || 'default'
+const calendarId = process.argv[2] || 'primary'
 
 // configure auth with supplied params
 const auth = new google.auth.JWT(

@@ -13,7 +13,6 @@ const auth = new google.auth.JWT(
 google.options({ auth });
 
 async function createEvent(evt, calendarId) {
-    console.log('creating event...');
     return calendar.events.insert({
         calendarId: calendarId,
         resource: evt

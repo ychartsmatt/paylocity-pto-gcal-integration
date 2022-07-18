@@ -1,4 +1,3 @@
-const { Endpoint } = require('googleapis-common');
 const calendarIds = require('./calendars.json');
 const createEvent = require('./src/createEvent');
 
@@ -19,8 +18,8 @@ exports.handler = async (event) => {
         }
 
         if (req.isAllDayEvent) {
-            event.start.date = req.timeOffStartDate
-            event.end.date = req.timeOffEndDate
+            event.start.date = req.timeOffStartDate.toISOString().slice(0, 10)
+            event.end.date = req.timeOffEndDate.toISOString().slice(0, 10)
         } else {
             event.start.dateTime = req.timeOffStartDate
             event.end.dateTime = req.timeOffEndDate
