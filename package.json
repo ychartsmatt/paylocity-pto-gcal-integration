@@ -4,8 +4,8 @@
   "description": "Lambda function webhook to sync approved Paylocity PTO requests into Google Calendar events",
   "main": "index.js",
   "scripts": {
-    "list-events": "node listEvents.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test-event": "node testEvent.js $*",
+    "list-events": "node listEvents.js $*"
   },
   "repository": {
     "type": "git",
