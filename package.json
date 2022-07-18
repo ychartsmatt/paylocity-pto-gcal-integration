@@ -1,0 +1,24 @@
+{
+  "name": "paylocity-pto-gcal-integration",
+  "version": "1.0.0",
+  "description": "Lambda function webhook to sync approved Paylocity PTO requests into Google Calendar events",
+  "main": "index.js",
+  "scripts": {
+    "list-events": "node listEvents.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ychartsmatt/paylocity-pto-gcal-integration.git"
+  },
+  "author": "Matt Curtis <mcurtis@ycharts.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ychartsmatt/paylocity-pto-gcal-integration/issues"
+  },
+  "homepage": "https://github.com/ychartsmatt/paylocity-pto-gcal-integration#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "googleapis": "^105.0.0"
+  }
+}
