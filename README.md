@@ -2,33 +2,29 @@
 
 [Paylocity](https://www.paylocity.com/) does not automatically sync with our Google Calendar in order to display PTO for employees. This makes us sad.
 
-Luckily, Paylocity does include a [webhook](https://paylocity.egain.cloud/system/templates/selfservice/pctycss/help/customer/locale/en-US/portal/308600000001020/content-version/PCTY-62328/PCTY-767054/Time-Off-Approval-Webhooks) to allow for integrations. This project exists to be run as an AWS Lambda function to be called by the webhook and creates calendar entries (via the [Google Calendar Events API](https://developers.google.com/calendar/api/v3/reference/events)) for a department's shared Google Calendar. This way, employees can subscribe to the given PTO calendar for their department and see who's on PTO at a given time.
-
+Luckily, Paylocity does include a [webhook](https://paylocity.egain.cloud/system/templates/selfservice/pctycss/help/customer/locale/en-US/portal/308600000001020/content-version/PCTY-62328/PCTY-767054/Time-Off-Approval-Webhooks) to allow for integrations. This project exists to be run as an AWS Lambda function to be called by the webhook and creates iCal files for each department, which can be accessed as a shared calendar in Google Calendar (or elsewhere). Each file is stored in the `pto-calendars` S3 bucket.
 ## Configuration
 
 ### Authentication
-Authentication requires two environment variables, set in the actual environment configuration (production) or in an `.env` file (local development):
+AWS Authentication requires four environment variables, set in the actual environment configuration (production) or in an `.env` file (local development):
 
-`GOOGLE_CLIENT_EMAIL`
+```
+AWS_DEFAULT_REGION
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+AWS_BUCKET_NAME
+```
 
-`GOOGLE_PRIVATE_KEY`
-
-Keys can be obtained/created by accessing the [Service Accounts area for Google Cloud](https://console.cloud.google.com/iam-admin/serviceaccounts?project=paylocity-pto-integration&supportedpurview=project). When a key is created, a `.json` file can be downloaded which contains this information.
-
-### Calendars
-Calendar IDs are configured for each department in `calendars.json`. If a department is not represented, it can be added to this file.
-
+## Functional notes
+Whenever a new item is added to a department's calendar, this script automatically deletes any events more than a week old to prevent the PTO calendar from becoming large with obsolete data. 
 
 ## Testing
-Some convenience methods exist to test and develop locally.
+A convenience method exists to test and develop locally.
 
 ```
 npm run test-event {CALENDAR_ID}
 ```
-Attempts to create a test event for the given `CALENDAR_ID`. if no `CALENDAR_ID` is supplied, `primary` is used.
 
-```
-npm run list-events {CALENDAR_ID}
-```
+Attempts to create a test event for the given `CALENDAR_ID`. if no `CALENDAR_ID` is supplied, `TEST` is used.
 
-Attempts to list top 10 upcoming events for the given `CALENDAR_ID`. if no `CALENDAR_ID` is supplied, `primary` is used.
+Displays .ics file output after the item has been added.

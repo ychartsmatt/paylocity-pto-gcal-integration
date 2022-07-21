@@ -1,34 +1,37 @@
 require('dotenv').config();
-const { google } = require('googleapis');
-const calendar = google.calendar({ version: 'v3' });
-const calendarId = process.argv[2] || 'primary'
+const AWS = require('aws-sdk');
 
-// configure auth with supplied params
-const auth = new google.auth.JWT(
-    process.env.GOOGLE_CLIENT_EMAIL,
-    null,
-    process.env.GOOGLE_PRIVATE_KEY,
-    ['https://www.googleapis.com/auth/calendar.events'],
-    null
-);
-google.options({ auth });
+async function listEvents(calendarId) {
 
-calendar.events.list({
-    calendarId: calendarId,
-    timeMin: (new Date()).toISOString(),
-    maxResults: 10,
-    singleEvents: true,
-    orderBy: 'startTime',
-  }, (err, res) => {
-    if (err) return console.log('The API returned an error: ' + err);
-    const events = res.data.items;
-    if (events.length) {
-      console.log('Upcoming 10 events:');
-      events.map((event, i) => {
-        const start = event.start.dateTime || event.start.date;
-        console.log(`${start} - ${event.summary}`);
-      });
-    } else {
-      console.log('No upcoming events found.');
+    let calFile;
+
+    try {
+        // get the calendar events if one exists already for this calendarId
+        calFile = await AWS.S3().getObject({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: `${calendarId}.ics`
+        });
+    } catch (e) {
+        calFile = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//sebbo.net//ical-generator//EN
+NAME:ENG PTO Calendar
+X-WR-CALNAME:ENG PTO Calendar
+BEGIN:VEVENT
+UID:a5151a0f-fdd1-48d2-8e90-bb02300bf19e
+SEQUENCE:0
+DTSTAMP:20220721T171748Z
+DTSTART;VALUE=DATE:20220722
+DTEND;VALUE=DATE:20220722
+X-MICROSOFT-CDO-ALLDAYEVENT:TRUE
+X-MICROSOFT-MSNCALENDAR-ALLDAYEVENT:TRUE
+SUMMARY:Test Event 2022-07-22
+END:VEVENT
+END:VCALENDAR`;
     }
-});
+
+    return calFile;
+
+};
+
+module.exports = listEvents;

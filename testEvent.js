@@ -1,7 +1,10 @@
-const createEvent = require('./src/createEvent');
+const createEvent = require('./createEvent');
+const listEvents = require('./listEvents');
+const calendarId = process.argv[2] || 'TEST'
 
+console.log(`Creating test event on calendar ${calendarId}...`);
 (async () => {
-
+    
     const todayDate = new Date();
     const tomorrowDate = new Date();
 
@@ -9,17 +12,19 @@ const createEvent = require('./src/createEvent');
 
     const tomorrow = tomorrowDate.toISOString().slice(0, 10)
 
-    console.log(`Creating test event for ${tomorrow}...`);
+    try {
+        await createEvent({
+            summary: `Test Event ${tomorrow}`,
+            start: tomorrowDate,
+            end: tomorrowDate,
+            allDay: true
+        }, calendarId);
 
-    await createEvent({
-        summary: `Test Event ${tomorrow}`,
-        start: {
-            date: tomorrow,
-            timeZone: 'America/New_York',
-        },
-        end: {
-            date: tomorrow,
-            timeZone: 'America/New_York'
-        }
-    }, 'primary');
+        console.log(`Created test event for ${tomorrow} on calendar ${calendarId}.`);
+
+        console.log(await listEvents(calendarId));
+    } catch (e) {
+        console.log(e);
+    }
+
 })();

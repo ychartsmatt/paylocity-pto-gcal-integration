@@ -4,8 +4,7 @@
   "description": "Lambda function webhook to sync approved Paylocity PTO requests into Google Calendar events",
   "main": "index.js",
   "scripts": {
-    "test-event": "node testEvent.js $*",
-    "list-events": "node listEvents.js $*"
+    "test-event": "node testEvent.js $*"
   },
   "repository": {
     "type": "git",
@@ -18,7 +17,9 @@
   },
   "homepage": "https://github.com/ychartsmatt/paylocity-pto-gcal-integration#readme",
   "dependencies": {
+    "aws-sdk": "^2.1179.0",
     "dotenv": "^16.0.1",
-    "googleapis": "^105.0.0"
+    "ical": "^0.8.0",
+    "ical-generator": "^3.4.3"
   }
 }
